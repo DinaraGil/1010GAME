@@ -30,7 +30,8 @@ class Board:
             figure_row = figure.get_array()[y]
             board_y = y + row
 
-            if not self.is_figure_row_can_placed(figure, figure_row, self.board[board_y], col):
+            if not self.is_figure_row_can_placed(figure, figure_row,
+                                                 self.board[board_y], col):
                 return False
         return True
 
@@ -41,7 +42,8 @@ class Board:
             figure_row = figure.get_array()[y]
             board_y = y + row
 
-            self.board[board_y] = self.merge_row(figure, figure_row, self.board[board_y], col)
+            self.board[board_y] = self.merge_row(figure, figure_row,
+                                                 self.board[board_y], col)
 
     def clear_board(self, figure, row, col):
         rows_clear_list = []
@@ -70,12 +72,14 @@ class Board:
             self.board[y] = 0
 
     def merge_row(self, figure, figure_row, board_row, col):
-        adjusted_figure_row = figure_row << (Board.cell_count - col - figure.get_width())
+        adjusted_figure_row = figure_row << (
+                Board.cell_count - col - figure.get_width())
         board_area_with_figure = adjusted_figure_row ^ board_row
         return board_area_with_figure
 
     def is_figure_row_can_placed(self, figure, figure_row, board_row, col):
-        result_mask = self.merge_row(figure, figure_row, board_row, col) & board_row
+        result_mask = self.merge_row(figure, figure_row, board_row,
+                                     col) & board_row
         return result_mask == board_row
 
     def is_filled(self, x, y):
@@ -101,7 +105,9 @@ class Board:
 class GraphicBoard:
     def __init__(self, top_left_pos: Vector2):
         self.board = Board()
-        board_size: int = Settings.cell_size * Board.cell_count + Settings.border_width * (Board.cell_count + 1)
+        board_size = int(
+            Settings.cell_size *
+            Board.cell_count + Settings.border_width * (Board.cell_count + 1))
         self.rect = pygame.Rect(top_left_pos, Vector2(board_size, board_size))
 
     def draw(self, screen):
@@ -109,31 +115,41 @@ class GraphicBoard:
         for row in range(Board.cell_count):
             for col in range(Board.cell_count):
                 filled = self.board.is_filled(col, row)
-                color = Settings.cell_color if filled else Settings.board_empty_cell_color
+                color = Settings.cell_color if filled else \
+                    Settings.board_empty_cell_color
                 pos = Vector2(self.rect.topleft)
-                pos.x += Settings.border_width + col * (Settings.cell_size + Settings.border_width)
-                pos.y += Settings.border_width + row * (Settings.cell_size + Settings.border_width)
-                pygame.draw.rect(screen, color, Rect(pos, Vector2(Settings.cell_size, Settings.cell_size)))
+                pos.x += Settings.border_width + col * (
+                        Settings.cell_size + Settings.border_width)
+                pos.y += Settings.border_width + row * (
+                        Settings.cell_size + Settings.border_width)
+                pygame.draw.rect(screen, color, Rect(pos, Vector2(
+                    Settings.cell_size, Settings.cell_size)))
 
     def get_rect(self):
         return self.rect
 
     def put_figure(self, figure):
-        if not(self.is_row_allowable(figure)):
+        if not (self.is_row_allowable(figure)):
             return False
-        if not(self.is_col_allowable(figure)):
+        if not (self.is_col_allowable(figure)):
             return False
 
-        return self.board.put_figure(figure.get_figure(), int(self.get_row(figure)), int(self.get_col(figure)))
+        return self.board.put_figure(figure.get_figure(),
+                                     int(self.get_row(figure)),
+                                     int(self.get_col(figure)))
 
     def get_row(self, figure):
-        pos = figure.get_position() + Vector2(Settings.cell_size // 2, Settings.cell_size // 2)
-        row = (pos.y - self.rect.top) // (Settings.cell_size + Settings.border_width)
+        pos = figure.get_position() + Vector2(Settings.cell_size // 2,
+                                              Settings.cell_size // 2)
+        row = (pos.y - self.rect.top) // (
+                Settings.cell_size + Settings.border_width)
         return row
 
     def get_col(self, figure):
-        pos = figure.get_position() + Vector2(Settings.cell_size // 2, Settings.cell_size // 2)
-        col = (pos.x - self.rect.left) // (Settings.cell_size + Settings.border_width)
+        pos = figure.get_position() + Vector2(Settings.cell_size // 2,
+                                              Settings.cell_size // 2)
+        col = (pos.x - self.rect.left) // (
+                Settings.cell_size + Settings.border_width)
         return col
 
     def is_row_allowable(self, figure):

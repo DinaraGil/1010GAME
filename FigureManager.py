@@ -24,4 +24,5 @@ class FigureManager:
             Figure(0b100, 0b100, 0b111)]  # палка 2 горизонт, 1 верт
 
     def choice_figures(self):
-        return [random.choice(self.figures), random.choice(self.figures), random.choice(self.figures)]
+        return [random.choice(self.figures), random.choice(self.figures),
+                random.choice(self.figures)]

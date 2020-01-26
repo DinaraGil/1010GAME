@@ -1,8 +1,9 @@
-from tkinter import *
 from tkinter import messagebox
+import tkinter as tk
+
 import pygame
 
-from Board import Board, GraphicBoard
+from Board import GraphicBoard
 from FigureDraw import FigureDraw
 from FigureManager import FigureManager
 from Settings import Settings
@@ -22,7 +23,8 @@ class Game:
 
         self.figure_manager = FigureManager()
 
-        self.graph_board = GraphicBoard(pygame.Vector2(Settings.cell_size, Settings.cell_size))
+        self.graph_board = GraphicBoard(
+            pygame.Vector2(Settings.cell_size, Settings.cell_size))
 
         self.figures = None
         self.create_figures()
@@ -31,9 +33,11 @@ class Game:
         self.mouse_offset_of_selected_figure = Vector2(0, 0)
 
     def end_game(self):
-        Tk().wm_withdraw()  # to hide the main window
-        messagebox.showinfo('END OF GAME', 'SCORE: ' + str(self.graph_board.get_board().get_score()))
-        self.graph_board = GraphicBoard(pygame.Vector2(Settings.cell_size, Settings.cell_size))
+        tk.Tk().wm_withdraw()  # to hide the main window
+        messagebox.showinfo('END OF GAME', 'SCORE: ' + str(
+            self.graph_board.get_board().get_score()))
+        self.graph_board = GraphicBoard(
+            pygame.Vector2(Settings.cell_size, Settings.cell_size))
         self.selected_figure = None
         self.create_figures()
 
@@ -46,7 +50,9 @@ class Game:
         self.figures = []
         for fig in figures:
             self.figures.append(FigureDraw(fig, Vector2(x, y)))
-            y += fig.get_height() * (Settings.cell_size + Settings.border_width) + Settings.cell_size
+            y += fig.get_height() * (
+                    Settings.cell_size +
+                    Settings.border_width) + Settings.cell_size
 
     def draw(self):
         self.screen.fill(Settings.background_color)
@@ -65,15 +71,18 @@ class Game:
 
     def is_end_of_game(self):
         for figure in self.figures:
-            if self.graph_board.get_board().can_place_anywhere(figure.get_figure()):
+            if self.graph_board.get_board().can_place_anywhere(
+                    figure.get_figure()):
                 return False
         return True
 
     def display_score(self):
         score = self.graph_board.get_board().get_score()
         font = pygame.font.Font(None, 30)
-        string_rendered = font.render('Score: ' + str(score), 1, pygame.Color('black'))
-        self.screen.blit(string_rendered, (Settings.cell_size, Settings.cell_size // 2))
+        string_rendered = font.render('Score: ' + str(score), 1,
+                                      pygame.Color('black'))
+        self.screen.blit(string_rendered,
+                         (Settings.cell_size, Settings.cell_size // 2))
 
     def loop(self):
         running = True
@@ -88,12 +97,14 @@ class Game:
                     for figure in self.figures:
                         if figure.is_selected(Vector2(event.pos)):
                             self.selected_figure = figure
-                            self.mouse_offset_of_selected_figure = event.pos - figure.get_position()
+                            self.mouse_offset_of_selected_figure = \
+                                event.pos - figure.get_position()
 
                 elif event.type == pygame.MOUSEBUTTONUP:
                     if self.selected_figure is not None:
                         if self.graph_board.put_figure(self.selected_figure):
-                            del self.figures[self.figures.index(self.selected_figure)]
+                            del self.figures[
+                                self.figures.index(self.selected_figure)]
 
                             if len(self.figures) == 0:
                                 self.create_figures()
@@ -103,12 +114,15 @@ class Game:
                                 self.draw()
                                 self.end_game()
                         else:
-                            self.selected_figure.set_position(self.selected_figure.get_start_position())
+                            self.selected_figure.set_position(
+                                self.selected_figure.get_start_position())
 
                         self.selected_figure = None
 
-                if event.type == pygame.MOUSEMOTION and self.selected_figure is not None:
-                    self.selected_figure.set_position(event.pos - self.mouse_offset_of_selected_figure)
+                if event.type == pygame.MOUSEMOTION and self.selected_figure \
+                        is not None:
+                    self.selected_figure.set_position(
+                        event.pos - self.mouse_offset_of_selected_figure)
 
                 self.draw()
 

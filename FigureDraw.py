@@ -19,18 +19,25 @@ class FigureDraw:
                     pos.x += col * (Settings.cell_size + Settings.border_width)
                     pos.y += row * (Settings.cell_size + Settings.border_width)
 
-                    pygame.draw.rect(screen, Settings.border_color,
-                                     Rect(pos, Vector2(Settings.cell_size + 2, Settings.cell_size + 2)))
+                    pygame.draw.rect(
+                        screen,
+                        Settings.border_color,
+                        Rect(pos, Vector2(
+                            Settings.cell_size + 2,
+                            Settings.cell_size + 2)))
 
                     pos.x += Settings.border_width
                     pos.y += Settings.border_width
 
                     pygame.draw.rect(screen, Settings.cell_color,
-                                     Rect(pos, Vector2(Settings.cell_size, Settings.cell_size)))
+                                     Rect(pos, Vector2(Settings.cell_size,
+                                                       Settings.cell_size)))
 
     def is_selected(self, pos: Vector2):
-        row = (pos.y - self.position.y) // (Settings.cell_size + Settings.border_width)
-        col = (pos.x - self.position.x) // (Settings.cell_size + Settings.border_width)
+        row = (pos.y - self.position.y) // (
+                Settings.cell_size + Settings.border_width)
+        col = (pos.x - self.position.x) // (
+                Settings.cell_size + Settings.border_width)
         if row < 0 or row > (self.figure.get_height() - 1):
             return False
         if col < 0 or col > (self.figure.get_width() - 1):
