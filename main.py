@@ -32,7 +32,7 @@ class Game:
 
     def end_game(self):
         Tk().wm_withdraw()  # to hide the main window
-        messagebox.showinfo('END OF GAME', 'RESTART')
+        messagebox.showinfo('END OF GAME', 'SCORE: ' + str(self.graph_board.get_board().get_score()))
         self.graph_board = GraphicBoard(pygame.Vector2(Settings.cell_size, Settings.cell_size))
         self.selected_figure = None
         self.create_figures()
@@ -59,6 +59,8 @@ class Game:
         if self.selected_figure is not None:
             self.selected_figure.draw(self.screen)
 
+        self.display_score()
+
         pygame.display.flip()
 
     def is_end_of_game(self):
@@ -66,6 +68,12 @@ class Game:
             if self.graph_board.get_board().can_place_anywhere(figure.get_figure()):
                 return False
         return True
+
+    def display_score(self):
+        score = self.graph_board.get_board().get_score()
+        font = pygame.font.Font(None, 30)
+        string_rendered = font.render('Score: ' + str(score), 1, pygame.Color('black'))
+        self.screen.blit(string_rendered, (Settings.cell_size, Settings.cell_size // 2))
 
     def loop(self):
         running = True
@@ -79,12 +87,10 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for figure in self.figures:
                         if figure.is_selected(Vector2(event.pos)):
-                            print('selected')
                             self.selected_figure = figure
                             self.mouse_offset_of_selected_figure = event.pos - figure.get_position()
 
                 elif event.type == pygame.MOUSEBUTTONUP:
-
                     if self.selected_figure is not None:
                         if self.graph_board.put_figure(self.selected_figure):
                             del self.figures[self.figures.index(self.selected_figure)]
@@ -93,6 +99,8 @@ class Game:
                                 self.create_figures()
 
                             if self.is_end_of_game():
+                                self.selected_figure = None
+                                self.draw()
                                 self.end_game()
                         else:
                             self.selected_figure.set_position(self.selected_figure.get_start_position())

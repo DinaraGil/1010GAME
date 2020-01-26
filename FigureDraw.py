@@ -1,8 +1,5 @@
 import pygame
 from pygame import Vector2, Rect
-# pygame.init()
-# screen = pygame.display.set_mode((1000, 1000))
-# screen.fill((0, 0, 0))
 from Figure import Figure
 from Settings import Settings
 

@@ -22,3 +22,10 @@ class Figure:
     def get_width(self):
         return self.width
 
+    def get_count_filled(self):
+        count = 0
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.is_filled(x, y):
+                    count += 1
+        return count

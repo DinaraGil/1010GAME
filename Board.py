@@ -9,6 +9,7 @@ class Board:
     def __init__(self):
         self.board = [0b0000000000 for i in range(Board.cell_count)]
         self.board_areas = []
+        self.score = 0
 
     def put_figure(self, figure, row, col):
         if row + figure.get_height() > Board.cell_count:
@@ -34,6 +35,8 @@ class Board:
         return True
 
     def place_figure(self, figure, row, col):
+        self.score += figure.get_count_filled()
+
         for y in range(figure.get_height()):
             figure_row = figure.get_array()[y]
             board_y = y + row
@@ -58,10 +61,12 @@ class Board:
                     break
 
             if filled:
+                self.score += Board.cell_count
                 for y in range(self.cell_count):
                     self.clear_cell(board_x, y)
 
         for y in rows_clear_list:
+            self.score += Board.cell_count
             self.board[y] = 0
 
     def merge_row(self, figure, figure_row, board_row, col):
@@ -88,6 +93,9 @@ class Board:
                     return True
 
         return False
+
+    def get_score(self):
+        return self.score
 
 
 class GraphicBoard:
@@ -116,7 +124,6 @@ class GraphicBoard:
         if not(self.is_col_allowable(figure)):
             return False
 
-        print(self.get_row(figure), self.get_col(figure))
         return self.board.put_figure(figure.get_figure(), int(self.get_row(figure)), int(self.get_col(figure)))
 
     def get_row(self, figure):
